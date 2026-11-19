@@ -213,10 +213,16 @@ var ESC = (function () {
         if (cae > .3) s += '<g opacity="' + cl((cae - .3) * 3) + '"><circle cx="230" cy="260" r="46" fill="none" stroke="#C62828" stroke-width="10"/><line x1="200" y1="230" x2="260" y2="290" stroke="#C62828" stroke-width="10"/></g>';
         s += cartel('❌ Se estiró hacia el lado: la escala se vuelca', false);
       } else {
-        var v = (t - .5) / .5, sube = ease(cl(v / .4)), toma = Math.sin(v * Math.PI * 4) * .5 + .5;
+        var v = (t - .5) / .5, sube = ease(cl(v / .35)), toma = .5 + .5 * Math.sin(v * Math.PI * 6);
         s += arbol(130, 330);
-        var E2 = escala(250, 330, 230, 7, -8, false), r2 = E2.rung(Math.round(L(1, 4, sube)));
-        s += E2.svg + persona(lerpPose(A({ x: r2[0] + 6, y: r2[1] - 66 }), A({ x: r2[0] + 6, y: r2[1] - 66, t: -8, aL: 150, aL2: 160 + 20 * toma }), cl((v - .4) / .2)), '#2E6B1F');
+        var E2 = escala(300, 330, 230, 7, -12, false), r2 = E2.rung(Math.round(L(1, 3, sube)));
+        var pose = A({ x: r2[0] + 4, y: r2[1] - 66, t: -6, aL: -100, aL2: L(-115, -85, toma), aR: -150, aR2: -175 });
+        s += E2.svg + persona(lerpPose(A({ x: r2[0] + 4, y: r2[1] - 66, aR: -150, aR2: -175 }), pose, cl((v - .35) / .15)), '#2E6B1F');
+        if (v > .45) { var nk = [pose.x + Math.sin(rad(pose.t)) * 52, pose.y - Math.cos(rad(pose.t)) * 52], mano = P(P(nk, pose.aL, 28), pose.aL2, 26);
+          s += '<circle cx="' + (mano[0] - 6) + '" cy="' + (mano[1] + 4) + '" r="9" fill="#C8102E"/><circle cx="' + (mano[0] + 4) + '" cy="' + (mano[1] + 7) + '" r="9" fill="#A50E26"/>';
+          s += '<circle cx="' + (mano[0] - 2) + '" cy="' + (mano[1] + 4) + '" r="24" fill="none" stroke="#2E7D32" stroke-width="5" opacity="' + (.4 + .6 * toma) + '"/>'; }
+        s += '<g transform="translate(470 200)"><circle r="46" fill="#2E7D32"/><path d="M-22 2 l14 14 l30 -30" stroke="#fff" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>';
+        s += '<text x="470" y="275" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="20" fill="#2E7D32">Cerca de la fruta,</text><text x="470" y="300" text-anchor="middle" font-family="Arial" font-weight="bold" font-size="20" fill="#2E7D32">sin estirarse</text>';
         s += cartel('✅ Bajó y movió la escala más cerca', true);
       }
       return s + '</svg>';

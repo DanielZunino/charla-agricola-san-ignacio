@@ -59,6 +59,36 @@
 #prog{position:absolute;left:0;top:0;height:.35em;background:linear-gradient(90deg,var(--r),var(--k));transition:width .4s;z-index:5}
 #pie{position:absolute;left:50%;bottom:1.25em;transform:translateX(-50%);font-size:.85em;color:var(--g);white-space:nowrap}
 #cont{font-size:1em;color:var(--g)}
+
+/* --- efectos para lucirse --- */
+.s{transform:translateX(4%) scale(.98);transition:opacity .55s,transform .55s cubic-bezier(.2,.8,.2,1)}
+.s.on{transform:none}
+.s.sale{transform:translateX(-4%) scale(.98)}
+.lluvia{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.lluvia i{position:absolute;top:-10%;font-style:normal;animation:cae linear infinite;opacity:.85}
+@keyframes cae{to{transform:translateY(125vh) rotate(360deg)}}
+.s.oscura .cuerpo{position:relative;z-index:1}
+.portada .logo{animation:late 3s ease-in-out infinite}
+@keyframes late{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.55),0 .4em 1.2em rgba(0,0,0,.35)}50%{box-shadow:0 0 0 .6em rgba(255,255,255,0),0 .4em 1.2em rgba(0,0,0,.35)}}
+.s.on .portada h1{animation:entra 1s cubic-bezier(.2,.8,.2,1) both}
+@keyframes entra{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
+.s.on .tit .ico{animation:gira .8s cubic-bezier(.2,.8,.2,1) both}
+@keyframes gira{from{transform:rotate(-180deg) scale(0)}to{transform:none}}
+.s.on .tit h2{animation:desliza .7s .1s cubic-bezier(.2,.8,.2,1) both}
+@keyframes desliza{from{opacity:0;transform:translateX(-1em)}to{opacity:1;transform:none}}
+.card,.paso,.chip,.col{transition:transform .25s,box-shadow .25s}
+.card:hover,.paso:hover,.chip:hover,.col:hover{transform:translateY(-.25em) scale(1.02);box-shadow:0 .6em 1.4em rgba(0,0,0,.14)}
+.card .ce,.pe{display:inline-block}.s.on .card .ce{animation:salta .9s .3s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes salta{from{transform:scale(0) rotate(-20deg)}to{transform:none}}
+.s.on .grande{animation:late2 2.2s ease-in-out 1s infinite}
+@keyframes late2{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.nb:first-child{animation:pulso 1.6s ease-in-out infinite}
+@keyframes pulso{0%,100%{box-shadow:0 0 0 0 rgba(46,107,31,.6)}50%{box-shadow:0 0 0 .8em rgba(46,107,31,0)}}
+.confeti{position:fixed;width:.6em;height:.9em;top:-1em;z-index:50;pointer-events:none;animation:conf 2.4s ease-in forwards}
+@keyframes conf{to{transform:translateY(110vh) rotate(720deg);opacity:.9}}
+.qop{transition:transform .2s}.qop:hover{transform:scale(1.03)}
+.qop.ok{animation:bien .6s}
+@keyframes bien{50%{transform:scale(1.08)}}
 </style></head><body><div id="esc"><div id="marco">
 <div id="prog"></div>
 <section class="s oscura" data-i="0"><div class="cuerpo"><div class="portada"><img class="logo lg" src="" alt="Agrícola San Ignacio">
@@ -117,4 +147,18 @@ document.querySelectorAll('.quiz').forEach(q=>{const P=JSON.parse(q.dataset.q);l
   q.querySelector('.qsig').onclick=()=>{delete q.dataset.r;n++;pinta()}}
  pinta()});
 ir(0);
+
+// --- efectos para lucirse ---
+(function(){
+ document.querySelectorAll('.s.oscura').forEach(s=>{const l=document.createElement('div');l.className='lluvia';const em=['🍒','🥝','🍃','🍒','🌱'];
+  for(let k=0;k<22;k++){const e=document.createElement('i');e.textContent=em[k%em.length];e.style.left=(Math.random()*100)+'%';e.style.fontSize=(1.2+Math.random()*1.8)+'em';e.style.animationDuration=(6+Math.random()*7)+'s';e.style.animationDelay=(-Math.random()*12)+'s';l.appendChild(e)}
+  s.prepend(l)});
+ let AC=null,SON=true;const tono=(f,d,tp,v)=>{if(!SON)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.type=tp||'sine';o.frequency.value=f;g.gain.setValueAtTime(v||.18,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+d);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+d)}catch(e){}};
+ const sBien=()=>{tono(880,.18);setTimeout(()=>tono(1320,.35),120)},sMal=()=>tono(180,.35,'triangle',.15),sPaso=()=>tono(520,.07,'sine',.05);
+ const confeti=n=>{const c=['#B3122B','#7FB032','#E23B4E','#2E6B1F','#FFD54A'];for(let k=0;k<(n||70);k++){const p=document.createElement('div');p.className='confeti';p.style.left=Math.random()*100+'vw';p.style.background=c[k%c.length];p.style.animationDelay=Math.random()*.6+'s';p.style.borderRadius=k%2?'50%':'2px';document.body.appendChild(p);setTimeout(()=>p.remove(),3200)}};
+ const b=document.createElement('button');b.textContent='🔊';b.title='Sonido';b.onclick=()=>{SON=!SON;b.textContent=SON?'🔊':'🔇'};document.getElementById('pant').before(b,' ');
+ const ir0=ir;ir=function(n){const prev=i;S.forEach((s,k)=>s.classList.toggle('sale',k<n));ir0(n);if(i!==prev)sPaso();if(i===S.length-1&&prev!==i)setTimeout(()=>confeti(90),500)};
+ new MutationObserver(ms=>ms.forEach(m=>{const el=m.target;if(el.classList&&el.classList.contains('qres')&&m.addedNodes.length){if(/Correcto/.test(el.textContent)){sBien();confeti(40)}else sMal()}
+   if(el.classList&&el.classList.contains('quiz')&&/Muy bien/.test(el.textContent)){confeti(120);sBien()}})).observe(document.getElementById('marco'),{subtree:true,childList:true});
+})();
 </script></body></html>

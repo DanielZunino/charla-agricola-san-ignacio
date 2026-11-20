@@ -232,7 +232,7 @@ var ESC = (function () {
       return s + '</svg>';
     },
     altura: function (t) {
-      var s = marco('#EAF6E2'), n = 8, E = escala(250, 335, 275, n, 0, true);
+      var s = marco('#EAF6E2'), n = 8, E = escala(310, 335, 275, n, -15, true);
       s += E.svg;
       var paso = Math.min(5, Math.floor(ease(cl(t / .6)) * 5.99)), r = paso ? E.rung(paso) : [300, 340];
       s += persona(A({ x: r[0] + 4, y: r[1] - 66, aL: 150, aL2: 170, aR: -150, aR2: -170 }));
